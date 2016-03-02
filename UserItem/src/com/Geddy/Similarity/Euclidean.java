@@ -25,9 +25,8 @@ public class Euclidean implements Distance {
 //                continue;
 //            }
             sum += Math.pow((value - userRating), 2);
-            System.out.println(sum);
         }
 
-        return (float)Math.sqrt(sum);
+        return 1/ (1 +((float)Math.sqrt(sum)));
     }
 }

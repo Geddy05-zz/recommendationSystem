@@ -23,7 +23,7 @@ public class MiningData {
                     user.setRating(Integer.parseInt(columns[1]),Double.parseDouble(columns[2]));
                     tmap.put(columns[0], user);
                 }else {
-                    UserPreference userPreference = new UserPreference(Integer.parseInt(columns[1]),Double.parseDouble(columns[2]));
+                    UserPreference userPreference = new UserPreference(Integer.parseInt(columns[0]), Integer.parseInt(columns[1]),Double.parseDouble(columns[2]));
                     tmap.put(columns[0], userPreference);
                 }
             }
