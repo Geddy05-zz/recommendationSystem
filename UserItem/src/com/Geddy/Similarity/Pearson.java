@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by lord_ on 18-2-2016.
+ * Created by Geddy on 18-2-2016.
  */
 public class Pearson implements Distance {
     public float calculate(UserPreference targetUser , UserPreference user){
