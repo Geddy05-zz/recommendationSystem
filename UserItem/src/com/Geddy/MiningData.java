@@ -18,7 +18,7 @@ public class MiningData {
         try {
             final Scanner data = new Scanner(new FileReader("u.data"));
             while (data.hasNext()) {
-                final String[] columns = data.next().split(",");
+                final String[] columns = data.nextLine().split("\\t");
                 if (Items.containsKey(columns[0])){
 
                     UserPreference user = Items.get(columns[0]);
@@ -34,11 +34,11 @@ public class MiningData {
         }
 
         // Log treeMap
-        for(Map.Entry<String,UserPreference> entry : Items.entrySet()) {
-            String key = entry.getKey();
-            UserPreference preference = entry.getValue();
-            System.out.println(key + "  => " + preference.getRatings());
-        }
+//        for(Map.Entry<String,UserPreference> entry : Items.entrySet()) {
+//            String key = entry.getKey();
+//            UserPreference preference = entry.getValue();
+//            System.out.println(key + "  => " + preference.getRatings());
+//        }
 
         return Items;
     }
