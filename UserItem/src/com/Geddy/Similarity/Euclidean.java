@@ -21,9 +21,9 @@ public class Euclidean implements Distance {
             if(user.getRatings().containsKey(key)) {
                 userRating = user.getRating(key);
             }
-//            else{
-//                continue;
-//            }
+            else{
+                continue;
+            }
             sum += Math.pow((value - userRating), 2);
         }
 
