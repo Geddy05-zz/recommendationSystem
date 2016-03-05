@@ -1,5 +1,6 @@
 package com.Geddy;
 
+import com.Geddy.Models.Item;
 import com.Geddy.Models.Neighbour;
 import com.Geddy.Models.UserPreference;
 import com.Geddy.Similarity.Cosine;
@@ -15,6 +16,8 @@ import java.util.*;
 public class Program {
 
     public HashMap<String, UserPreference> tmap = new HashMap<String, UserPreference>();
+//    public HashMap<Integer,String> genre = new HashMap<Integer, String>();
+    public HashMap<Integer,Item> items = new HashMap<Integer, Item>();
     ArrayList<Neighbour> neighbours = new ArrayList<Neighbour>();
     DecimalFormat decimal = new DecimalFormat("#.##");
 
@@ -28,19 +31,12 @@ public class Program {
 
 
         MiningData miningdata = new MiningData();
-        this.tmap=miningdata.readData();
+        this.tmap = miningdata.readData();
+        HashMap<Integer,String> genre  = miningdata.getGenreFromFile();
+        this.items = miningdata.getMovieFromFile(genre);
+        // make genre empty for saving memory;
+        genre = null;
 
-//        Context euclidean = new Context(new Euclidean());
-//        float distance = euclidean.calculateDistance(tmap.get("1"),tmap.get("3"));
-//        System.out.println(distance);
-//
-//        Context pearson = new Context(new Pearson());
-//        float distancePearson = pearson.calculateDistance(tmap.get("1"),tmap.get("3"));
-//        System.out.println(distancePearson);
-//
-//        Context cosine = new Context(new Cosine());
-//        float distanceCosine = cosine.calculateDistance(tmap.get("1"),tmap.get("3"));
-//        System.out.println(distanceCosine);
 
         nearestNeighbour();
         System.out.println("\n\n");
