@@ -33,13 +33,6 @@ public class MiningData {
             System.out.println(e);
         }
 
-        // Log treeMap
-//        for(Map.Entry<String,UserPreference> entry : Items.entrySet()) {
-//            String key = entry.getKey();
-//            UserPreference preference = entry.getValue();
-//            System.out.println(key + "  => " + preference.getRatings());
-//        }
-
         return Items;
     }
 
@@ -70,7 +63,6 @@ public class MiningData {
         try{
             final Scanner genreData = new Scanner(new FileReader("u.item"));
             while (genreData.hasNext()){
-//                final String line = genreData.nextLine();
                 final String[] columns = genreData.nextLine().split("\\|");
                 int id = Integer.parseInt(columns[0]);
                 String name = columns[1];
@@ -97,7 +89,5 @@ public class MiningData {
             System.out.println(entry.getKey() + "  => " + entry.getValue().getName() + " => " + entry.getValue().getGenre() );
         }
         return items;
-
     }
-
 }

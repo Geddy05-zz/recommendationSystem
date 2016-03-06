@@ -61,20 +61,22 @@ public class Program {
         System.out.println("____________________Neighbours____________________");
 
         String format = "%-40s%s%n";
-
         for (Neighbour n : neighbours){
             System.out.printf(format," Distance: " + decimal.format(n.getDistance()),"   User:"+ n.getUser().getUserId());
         }
 
         ArrayList<Recommendation> recommendations = recommend();
 
+        format = "%-40s%-30s%-20s%-20s%n";
         System.out.println("\n\n");
         System.out.println("__________________Recommendation__________________");
         for (Recommendation r : recommendations.subList(0,numberOfRecommendations)){
-            System.out.printf(format," Item: " + items.get(r.getItemId()).getName() ,"   Rating:"+ r.getRating());
+            Item item = items.get(r.getItemId());
+            System.out.printf(format," Item: " + item.getName() ,item.getGenre(), item.getDate(),"   Rating:"+ r.getRating());
         }
     }
 
+    // return nearest Neighbors depending on method the user choice
     public void nearestNeighbour() {
         UserPreference target = tmap.get(targetUserKey);
         Double lowestInList = 2.0;
@@ -145,8 +147,7 @@ public class Program {
         return false;
     }
 
-    // TODO: If a article is rated by more then 1 user create the Weight of all the neighbors who rated the article
-
+    // Return a list with top N recommendations.
     public ArrayList<Recommendation> recommend(){
         ArrayList<Recommendation> recommendations = new ArrayList<Recommendation>();
 
@@ -178,11 +179,12 @@ public class Program {
             recommendations.add(rec);
         }
 
-        recommendations.sort(new recommandationComparator());
+        recommendations.sort(new recommendationComparator());
         return  recommendations;
     }
 }
 
+// Sort function/ class for sorting the neighbours
 class neighbourComparator implements Comparator<Neighbour> {
     @Override
     public int compare(Neighbour a, Neighbour b) {
@@ -190,7 +192,8 @@ class neighbourComparator implements Comparator<Neighbour> {
     }
 }
 
-class recommandationComparator implements Comparator<Recommendation> {
+// Sort function/ class for sorting the recommendations
+class recommendationComparator implements Comparator<Recommendation> {
     @Override
     public int compare(Recommendation a, Recommendation b) {
         return a.getRating() > b.getRating() ? -1 : a.getRating() == (b.getRating()) ? 0 : 1;
