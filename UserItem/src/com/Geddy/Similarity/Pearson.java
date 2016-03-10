@@ -14,9 +14,10 @@ public class Pearson implements Distance {
         int sumX = 0;
         int sumY = 0;
         int sumXY = 0;
-        int sumXK = 0;
-        int sumYK = 0;
+        int sumXPower = 0;
+        int sumYPower = 0;
 
+        // Pearson Formule
         for (Map.Entry<Integer, Double> entry : targetUser.getRatings().entrySet()) {
             int key = entry.getKey();
             double value = entry.getValue();
@@ -26,13 +27,13 @@ public class Pearson implements Distance {
                 int y = (int) user.getRating(key);
                 sumX += x;
                 sumY += y;
-                sumXK += Math.pow(x, 2);
-                sumYK += Math.pow(y, 2);
+                sumXPower += Math.pow(x, 2);
+                sumYPower += Math.pow(y, 2);
                 sumXY = sumXY + (x * y);
             }
         }
         double sumPartOne = (count*sumXY) - (sumX * sumY);
-        double sumPartTwo = (Math.sqrt((count*sumXK)- Math.pow(sumX,2)) * Math.sqrt((count*sumYK)- (Math.pow(sumY,2))));
+        double sumPartTwo = (Math.sqrt((count*sumXPower)- Math.pow(sumX,2)) * Math.sqrt((count*sumYPower)- (Math.pow(sumY,2))));
         float answer = (float)sumPartOne / (float)sumPartTwo;
         return answer;
     }

@@ -17,10 +17,11 @@ public class Euclidean implements Distance {
         for (Map.Entry<Integer, Double> entry : targetUser.getRatings().entrySet()) {
             Integer key = entry.getKey();
             Double value = entry.getValue();
-            double userRating = 0 ;
+            double userRating ;
             if(user.getRatings().containsKey(key)) {
                 userRating = user.getRating(key);
             }
+            // do nothing if the user we compare with do not rate a item.
             else{
                 continue;
             }

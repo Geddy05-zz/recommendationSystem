@@ -16,11 +16,11 @@ import java.util.*;
  */
 public class Program {
 
-    public HashMap<String, UserPreference> tmap = new HashMap<String, UserPreference>();
+    public HashMap<String, UserPreference> userRatings = new HashMap<String, UserPreference>();
 //    public HashMap<Integer,String> genre = new HashMap<Integer, String>();
-    public HashMap<Integer,Item> items = new HashMap<Integer, Item>();
+    public HashMap<Integer,Item> movies = new HashMap<Integer, Item>();
     ArrayList<Neighbour> neighbours = new ArrayList<Neighbour>();
-    DecimalFormat decimal = new DecimalFormat("#.##");
+    DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
 
     public String targetUserKey = "7";
@@ -34,75 +34,92 @@ public class Program {
 
 
         // get input
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Select targetUSer ");
-        targetUserKey = scanner.next();
-
-        System.out.println("1   =>  Cosine");
-        System.out.println("2   =>  Euclidean");
-        System.out.println("3   =>  Pearson");
-        System.out.println("Select method number");
-        methodnr = scanner.nextInt();
-
-        System.out.println("Number of recommendations wanted ?");
-        numberOfRecommendations = scanner.nextInt();
+        getInputValues();
 
         // MiningData
         MiningData miningdata = new MiningData();
-        this.tmap = miningdata.readData();
+        this.userRatings = miningdata.readData();
         HashMap<Integer,String> genre  = miningdata.getGenreFromFile();
-        this.items = miningdata.getMovieFromFile(genre);
-        // make genre empty for saving memory;
-        genre = null;
+        this.movies = miningdata.getMovieFromFile(genre);
+
+        this.targetUser = this.userRatings.get(targetUserKey);
 
         // Get Neighbors Users
         nearestNeighbour();
+
         System.out.println("\n\n");
         System.out.println("____________________Neighbours____________________");
 
         String format = "%-40s%s%n";
         for (Neighbour n : neighbours){
-            System.out.printf(format," Distance: " + decimal.format(n.getDistance()),"   User:"+ n.getUser().getUserId());
+            System.out.printf(format," Distance: " + decimalFormat.format(n.getDistance()),"   User:"+ n.getUser().getUserId());
         }
 
-        ArrayList<Recommendation> recommendations = recommend();
+        // get recommended items
+        List<Recommendation> recommendations = recommend();
 
         format = "%-40s%-30s%-20s%-20s%n";
         System.out.println("\n\n");
         System.out.println("__________________Recommendation__________________");
-        for (Recommendation r : recommendations.subList(0,numberOfRecommendations)){
-            Item item = items.get(r.getItemId());
+        for (Recommendation r : recommendations){
+            Item item = movies.get(r.getItemId());
             System.out.printf(format," Item: " + item.getName() ,item.getGenre(), item.getDate(),"   Rating:"+ r.getRating());
         }
     }
 
+    public void getInputValues(){
+
+        // get user input
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Select target user ");
+        this.targetUserKey = scanner.next();
+
+        System.out.println("1   =>  Cosine");
+        System.out.println("2   =>  Euclidean");
+        System.out.println("3   =>  Pearson");
+        System.out.println("Select method number");
+        this.methodnr = scanner.nextInt();
+
+        System.out.println("Number of recommendations wanted ?");
+        this.numberOfRecommendations = scanner.nextInt();
+
+    }
+
     // return nearest Neighbors depending on method the user choice
     public void nearestNeighbour() {
-        UserPreference target = tmap.get(targetUserKey);
+        UserPreference target = userRatings.get(targetUserKey);
         Double lowestInList = 2.0;
 
         Context context = CreateContext();
 
         int count = 0;
-        for (Map.Entry<String, UserPreference> entry : tmap.entrySet()) {
+        for (Map.Entry<String, UserPreference> entry : userRatings.entrySet()) {
             String key = entry.getKey();
             UserPreference user = entry.getValue();
-            if (!key.equals(targetUserKey)){
 
+            // if user in the list isn't the target user
+            if (!key.equals(targetUserKey)){
                 double distance =  context.calculateDistance(target,entry.getValue());
 
+                // Check if user distance is greater then threshold and user have another item rated
                 if(distance > threshold && haveMoreRatings(target,user)){
                     Neighbour neighbour = new Neighbour(user,distance);
-
                     if(distance < lowestInList){
                         lowestInList = distance;
                     }
 
+                    // Check if neighbours list isn't bigger then we want to.
+                    // if it is bigger remove the lowest neighbour and change
+                    // and change the threshold to lowest item.
+
                     if(count >= amountOfNeighbours){
                         if(distance >lowestInList){
+                            // we add the neighbour before we check the lowest
                             neighbours.add(neighbour);
 
                             Neighbour lowestNeighbour = null;
+
+                            // check for lowest neighbour
                             for (Neighbour n : neighbours){
                                 if(lowestNeighbour == null){
                                     lowestNeighbour = n;
@@ -110,17 +127,20 @@ public class Program {
                                     lowestNeighbour = n;
                                 }
                             }
+                            // remove the lowest
                             neighbours.remove(lowestNeighbour);
                         }
+                        // change the threshold
                         threshold = lowestInList;
                     }else{
                         neighbours.add(neighbour);
                         count++;
                     }
                 }
-            }else{
-                targetUser = entry.getValue();
             }
+//            else{
+//                targetUser = entry.getValue();
+//            }
         }
         neighbours.sort(new neighbourComparator());
     }
@@ -148,9 +168,10 @@ public class Program {
     }
 
     // Return a list with top N recommendations.
-    public ArrayList<Recommendation> recommend(){
+    public List<Recommendation> recommend(){
         ArrayList<Recommendation> recommendations = new ArrayList<Recommendation>();
 
+        // get articles from the neighbours that the target user didn't rate
         ArrayList<Integer> articles = new ArrayList<Integer>();
         for (Neighbour n : neighbours){
             for(Map.Entry<Integer, Double> entry : n.getUser().getRatings().entrySet()) {
@@ -160,8 +181,12 @@ public class Program {
             }
         }
 
+        // Loop the list of articles for calculate the rate for the target user.
         for (Integer article : articles ){
             HashMap<Double,Double> tempRecommendation = new HashMap<Double, Double>();
+
+            // get the ratings of the neighbours and put them in the hash map.
+            // The key is the rating and value is the distance
             for (Neighbour n : neighbours){
                 if(n.getUser().getRatings().containsKey(article)){
                     tempRecommendation.put(n.getUser().getRating(article),n.getDistance());
@@ -171,16 +196,23 @@ public class Program {
             Double ratingSum = 0.0;
             Double weightSum = 0.0;
 
+            // calculate the rating for a article. and add the article if there a more then one rating
+            int amountOrates = 0;
             for(Map.Entry<Double, Double> entry : tempRecommendation.entrySet()){
                 ratingSum += entry.getKey() * entry.getValue();
                 weightSum += entry.getValue();
+                amountOrates++;
+
             }
-            Recommendation rec = new Recommendation(article,(ratingSum/weightSum));
-            recommendations.add(rec);
+            if (amountOrates > 3) {
+                Recommendation rec = new Recommendation(article, (ratingSum / weightSum));
+                recommendations.add(rec);
+            }
         }
 
+        // sort the list
         recommendations.sort(new recommendationComparator());
-        return  recommendations;
+        return  recommendations.subList(0,numberOfRecommendations);
     }
 }
 

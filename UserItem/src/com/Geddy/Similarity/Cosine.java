@@ -16,6 +16,7 @@ public class Cosine implements Distance {
 
         HashMap<Integer,Double> items = new HashMap<Integer,Double>();
 
+        // put all articles in a list
         for (Map.Entry<Integer,Double> entry : targetUser.getRatings().entrySet()) {
             if(items.size() == 0 || !items.containsKey(entry.getKey())) {
                 items.put(entry.getKey(),entry.getValue());
@@ -28,6 +29,7 @@ public class Cosine implements Distance {
             }
         }
 
+        // the Cosine formule
         for (Map.Entry<Integer,Double> entry : items.entrySet()) {
             float tempX = 0;
             float tempY = 0;
