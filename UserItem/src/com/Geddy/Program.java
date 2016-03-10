@@ -20,6 +20,7 @@ public class Program {
 //    public HashMap<Integer,String> genre = new HashMap<Integer, String>();
     public HashMap<Integer,Item> movies = new HashMap<Integer, Item>();
     ArrayList<Neighbour> neighbours = new ArrayList<Neighbour>();
+    List<Recommendation> recommendations;
     DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
 
@@ -47,24 +48,10 @@ public class Program {
         // Get Neighbors Users
         nearestNeighbour();
 
-        System.out.println("\n\n");
-        System.out.println("____________________Neighbours____________________");
-
-        String format = "%-40s%s%n";
-        for (Neighbour n : neighbours){
-            System.out.printf(format," Distance: " + decimalFormat.format(n.getDistance()),"   User:"+ n.getUser().getUserId());
-        }
-
         // get recommended items
-        List<Recommendation> recommendations = recommend();
+        recommendations = recommend();
 
-        format = "%-40s%-30s%-20s%-20s%n";
-        System.out.println("\n\n");
-        System.out.println("__________________Recommendation__________________");
-        for (Recommendation r : recommendations){
-            Item item = movies.get(r.getItemId());
-            System.out.printf(format," Item: " + item.getName() ,item.getGenre(), item.getDate(),"   Rating:"+ r.getRating());
-        }
+        printResults();
     }
 
     public void getInputValues(){
@@ -83,6 +70,29 @@ public class Program {
         System.out.println("Number of recommendations wanted ?");
         this.numberOfRecommendations = scanner.nextInt();
 
+    }
+
+    public void printResults(){
+        // format is a layout for printing on the command line
+        String format = "%-40s%s%n";
+
+        System.out.println("\n\n");
+        System.out.println("____________________  Neighbours  ____________________");
+
+        for (Neighbour n : neighbours){
+            System.out.printf(format," Distance: " + decimalFormat.format(n.getDistance()),"   User:"+ n.getUser().getUserId());
+        }
+
+        // format is a layout for printing on the command line
+        format = "%-65s%-50s%-20s%-20s%n";
+
+        System.out.println("\n\n");
+        System.out.println("__________________  Recommendation  __________________");
+        for (Recommendation r : recommendations){
+            Item item = movies.get(r.getItemId());
+            System.out.printf(format," Item: " + item.getName() ,item.getGenre(), item.getDate(),
+                    "   Rating:"+ decimalFormat.format(r.getRating()));
+        }
     }
 
     // return nearest Neighbors depending on method the user choice
@@ -175,7 +185,7 @@ public class Program {
         ArrayList<Integer> articles = new ArrayList<Integer>();
         for (Neighbour n : neighbours){
             for(Map.Entry<Integer, Double> entry : n.getUser().getRatings().entrySet()) {
-                if (!targetUser.getRatings().containsKey(entry.getKey())) {
+                if (!targetUser.getRatings().containsKey(entry.getKey()) && !articles.contains(entry.getKey())) {
                     articles.add(entry.getKey());
                 }
             }
@@ -204,7 +214,9 @@ public class Program {
                 amountOrates++;
 
             }
-            if (amountOrates > 3) {
+
+            // if there a 3 or more rates add to recommendation
+            if (amountOrates >= 3) {
                 Recommendation rec = new Recommendation(article, (ratingSum / weightSum));
                 recommendations.add(rec);
             }
