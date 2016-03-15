@@ -7,9 +7,6 @@ import com.Geddy.Models.UserPreference;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by lord_ on 16-2-2016.
- */
 public class Euclidean implements Distance {
     public float calculate(UserPreference targetUser ,UserPreference user){
 
@@ -18,16 +15,15 @@ public class Euclidean implements Distance {
             Integer key = entry.getKey();
             Double value = entry.getValue();
             double userRating ;
+
+            // if the user we compare with rate the item calculate the sum to the power of 2.
             if(user.getRatings().containsKey(key)) {
                 userRating = user.getRating(key);
+                sum += Math.pow((value - userRating), 2);
             }
-            // do nothing if the user we compare with do not rate a item.
-            else{
-                continue;
-            }
-            sum += Math.pow((value - userRating), 2);
         }
 
+        // sigmoid method returns a value between 0 and 1;
         return 1/ (1 +((float)Math.sqrt(sum)));
     }
 }

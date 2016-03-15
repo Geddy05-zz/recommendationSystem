@@ -13,27 +13,30 @@ import java.util.regex.Pattern;
 public class MiningData {
 
     public HashMap<String, UserPreference> readData(){
-        HashMap<String, UserPreference> Items = new HashMap<String,UserPreference>();
+        HashMap<String, UserPreference> items = new HashMap<String,UserPreference>();
 
         try {
             final Scanner data = new Scanner(new FileReader("u.data"));
             while (data.hasNext()) {
                 final String[] columns = data.nextLine().split("\\t");
-                if (Items.containsKey(columns[0])){
+                if (items.containsKey(columns[0])){
 
-                    UserPreference user = Items.get(columns[0]);
+                    UserPreference user = items.get(columns[0]);
                     user.setRating(Integer.parseInt(columns[1]),Double.parseDouble(columns[2]));
-                    Items.put(columns[0], user);
+                    items.put(columns[0], user);
                 }else {
                     UserPreference userPreference = new UserPreference(Integer.parseInt(columns[0]), Integer.parseInt(columns[1]),Double.parseDouble(columns[2]));
-                    Items.put(columns[0], userPreference);
+                    items.put(columns[0], userPreference);
                 }
+            }
+            for(Map.Entry<String, UserPreference> entry : items.entrySet()) {
+                System.out.println(entry.getKey() + "  => " + entry.getValue().getRatings());
             }
         }catch(Exception e){
             System.out.println(e);
         }
 
-        return Items;
+        return items;
     }
 
     public HashMap<Integer,String> getGenreFromFile(){
@@ -86,7 +89,7 @@ public class MiningData {
         }
 
         for(Map.Entry<Integer,Item> entry : items.entrySet()) {
-            System.out.println(entry.getKey() + "  => " + entry.getValue().getName() + " => " + entry.getValue().getGenre() );
+            System.out.println(entry.getKey() + "  => " + entry.getValue().getName() + " / " + entry.getValue().getGenre() );
         }
         return items;
     }

@@ -11,9 +11,6 @@ import com.Geddy.Similarity.Pearson;
 import java.text.DecimalFormat;
 import java.util.*;
 
-/**
- * Created by geddy on 16-2-2016.
- */
 public class Program {
 
     public HashMap<String, UserPreference> userRatings = new HashMap<String, UserPreference>();
@@ -103,13 +100,13 @@ public class Program {
         Context context = CreateContext();
 
         int count = 0;
-        for (Map.Entry<String, UserPreference> entry : userRatings.entrySet()) {
-            String key = entry.getKey();
-            UserPreference user = entry.getValue();
+        for (Map.Entry<String, UserPreference> row : userRatings.entrySet()) {
+            String key = row.getKey();
+            UserPreference user = row.getValue();
 
             // if user in the list isn't the target user
             if (!key.equals(targetUserKey)){
-                double distance =  context.calculateDistance(target,entry.getValue());
+                double distance =  context.calculateDistance(target,user);
 
                 // Check if user distance is greater then threshold and user have another item rated
                 if(distance > threshold && haveMoreRatings(target,user)){
@@ -121,7 +118,6 @@ public class Program {
                     // Check if neighbours list isn't bigger then we want to.
                     // if it is bigger remove the lowest neighbour and change
                     // and change the threshold to lowest item.
-
                     if(count >= amountOfNeighbours){
                         if(distance >lowestInList){
                             // we add the neighbour before we check the lowest
@@ -148,9 +144,6 @@ public class Program {
                     }
                 }
             }
-//            else{
-//                targetUser = entry.getValue();
-//            }
         }
         neighbours.sort(new neighbourComparator());
     }

@@ -1,8 +1,5 @@
 package com.Geddy.Models;
 
-/**
- * Created by geddy on 05/03/16.
- */
 public class Recommendation {
     public int itemId;
     public double rating;

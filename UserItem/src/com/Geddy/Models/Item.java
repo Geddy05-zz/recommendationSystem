@@ -1,11 +1,7 @@
 package com.Geddy.Models;
 
-import java.util.AbstractList;
 import java.util.ArrayList;
 
-/**
- * Created by geddy on 05/03/16.
- */
 public class Item {
     private int iD;
     private String name;
@@ -19,7 +15,6 @@ public class Item {
         this.date = date;
         this.imdb = imdb;
         this.genre = genre;
-
     }
 
     public int getiD() {

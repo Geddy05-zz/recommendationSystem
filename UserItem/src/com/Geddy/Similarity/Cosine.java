@@ -5,9 +5,6 @@ import com.Geddy.Models.UserPreference;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by Geddy on 18-2-2016.
- */
 public class Cosine implements Distance {
     public float calculate(UserPreference targetUser ,UserPreference user){
         float xDotY = 0;
