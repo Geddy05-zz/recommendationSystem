@@ -61,7 +61,7 @@ public class MiningData {
     }
 
     public HashMap<Integer,Item>getMovieFromFile(HashMap<Integer,String> genres){
-        HashMap<Integer,Item> items = new HashMap<Integer, Item>();
+        HashMap<Integer,Item> movies = new HashMap<Integer, Item>();
 
         try{
             final Scanner genreData = new Scanner(new FileReader("u.item"));
@@ -81,16 +81,16 @@ public class MiningData {
                     count++;
                 }
                 Item item = new Item(id,name,date,imdb,genre);
-                items.put(Integer.parseInt(columns[0]),item);
+                movies.put(Integer.parseInt(columns[0]),item);
             }
 
         }catch(Exception e){
             System.out.println(e);
         }
 
-        for(Map.Entry<Integer,Item> entry : items.entrySet()) {
+        for(Map.Entry<Integer,Item> entry : movies.entrySet()) {
             System.out.println(entry.getKey() + "  => " + entry.getValue().getName() + " / " + entry.getValue().getGenre() );
         }
-        return items;
+        return movies;
     }
 }
