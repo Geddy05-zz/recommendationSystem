@@ -20,8 +20,8 @@ public class Pearson implements Distance {
             double value = entry.getValue();
             if (user.getRatings().containsKey(key)) {
                 count++;
-                double x = (double) value;
-                double y = (double) user.getRating(key);
+                double x = value;
+                double y = user.getRating(key);
                 sumX += x;
                 sumY += y;
                 sumXPower += Math.pow(x, 2);
@@ -36,7 +36,6 @@ public class Pearson implements Distance {
         if (domination == 0){
             return 0;
         }
-
         return (float) (sumPartOne / domination);
     }
 }
