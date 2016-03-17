@@ -12,7 +12,7 @@ public class Program {
         userItem = miningData.readData();
 
         SlopeOne so = new SlopeOne();
-        double a = so.calculate(userItem.get("103"),userItem.get("104"));
+        HashMap<Integer, HashMap<Integer,Double>>  a = so.calculate(userItem);
         System.out.print(a);
     }
 }
