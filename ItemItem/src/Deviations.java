@@ -6,10 +6,10 @@ public class Deviations {
     int productID;
     int amountOfRatings;
 
-    public Deviations(int productID,double rating){
+    public Deviations(int productID,double rating,int amountOfRatings){
         this.productID = productID;
         this.rating = rating;
-        this.amountOfRatings = 1;
+        this.amountOfRatings = amountOfRatings;
     }
 
     public double getRating() {
@@ -23,6 +23,8 @@ public class Deviations {
     public int getAmountOfRatings() {
         return amountOfRatings;
     }
+
+    public void updateAmountOfRatings(){ amountOfRatings++;}
 
     public void updateDeviaton(UserPreference user){
 

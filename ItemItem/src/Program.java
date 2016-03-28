@@ -20,9 +20,16 @@ public class Program {
             HashMap<Integer,Deviations> differents = entry.getValue();
             System.out.println(" ");
             System.out.print(key + "  => ");
+
             for(Map.Entry<Integer,Deviations> dev : differents.entrySet()) {
-                System.out.print(dev.getKey() + " = " + dev.getValue().getRating() + ", ");
+                System.out.print(dev.getKey() + " = " + dev.getValue().getRating() + "  "+ dev.getValue().amountOfRatings +", ");
             }
+        }
+
+        System.out.println(" ");
+        HashMap<Integer,Double>  rec = so.predictRating(userItem.get("2"),a);
+        for(Map.Entry<Integer,Double> r : rec.entrySet()) {
+            System.out.println(r.getKey() + " = " + r.getValue());
         }
     }
 }

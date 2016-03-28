@@ -12,7 +12,8 @@ public class MiningData {
         HashMap<String, UserPreference> userItem = new HashMap<String,UserPreference>();
 
         try {
-            final Scanner data = new Scanner(new FileReader("userItem.data"));
+//            final Scanner data = new Scanner(new FileReader("userItem.data"));
+            final Scanner data = new Scanner(new FileReader("test.data"));
             while (data.hasNext()) {
                 final String[] columns = data.next().split(",");
                 if (userItem.containsKey(columns[0])){
