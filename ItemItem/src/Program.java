@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by geddy on 15-3-2016.
@@ -12,7 +13,23 @@ public class Program {
         userItem = miningData.readData();
 
         SlopeOne so = new SlopeOne();
-        double a = so.calculate(userItem.get("103"),userItem.get("104"));
-        System.out.print(a);
+        HashMap<Integer, HashMap<Integer,Deviations>>  a = so.calculate(userItem);
+
+        for(Map.Entry<Integer, HashMap<Integer,Deviations>> entry : a.entrySet()) {
+            Integer key = entry.getKey();
+            HashMap<Integer,Deviations> differents = entry.getValue();
+            System.out.println(" ");
+            System.out.print(key + "  => ");
+
+            for(Map.Entry<Integer,Deviations> dev : differents.entrySet()) {
+                System.out.print(dev.getKey() + " = " + dev.getValue().getRating() + "  "+ dev.getValue().amountOfRatings +", ");
+            }
+        }
+
+        System.out.println(" ");
+        HashMap<Integer,Double>  rec = so.predictRating(userItem.get("2"),a);
+        for(Map.Entry<Integer,Double> r : rec.entrySet()) {
+            System.out.println(r.getKey() + " = " + r.getValue());
+        }
     }
 }
