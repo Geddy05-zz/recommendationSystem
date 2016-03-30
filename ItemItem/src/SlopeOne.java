@@ -1,6 +1,6 @@
-import java.util.HashMap;
-import java.util.InputMismatchException;
-import java.util.Map;
+import javafx.util.Pair;
+
+import java.util.*;
 
 /**
  * Created by geddy on 17-3-2016.
@@ -22,14 +22,14 @@ public class SlopeOne {
                     // if rating != targetRating calculate slope one
                     if(targetRating != compareRating){
 
-                        // create the hashmap
+                        // create the hashmap or get the right hashmap
                         HashMap<Integer, Integer> temp;
                         HashMap<Integer, Deviations> tempDev;
                         int amount = 1;
                         double rate = 0.0;
                         if (freg.size() == 0 || !freg.containsKey(targetRating.getKey())) {
-                            temp = new HashMap<>();
-                            tempDev = new HashMap<>();
+                                temp = new HashMap<>();
+                                tempDev = new HashMap<>();
                         }else{
                             temp = freg.get(targetRating.getKey());
                             if(temp.containsKey(compareRating.getKey())) {
@@ -44,7 +44,11 @@ public class SlopeOne {
                         // Calculate the slope one ans update the hashmap
                         rate += targetRating.getValue() - compareRating.getValue();
                         temp.put(compareRating.getKey(),amount);
+
+                        // create Deviations object
                         Deviations deviation = new Deviations(compareRating.getKey(),rate,amount);
+
+                        // update the hashmap
                         tempDev.put(compareRating.getKey(),deviation);
                         dev.put(targetRating.getKey(),tempDev);
                         freg.put(targetRating.getKey(),temp);
@@ -54,6 +58,9 @@ public class SlopeOne {
                 }
             }
         }
+
+        // loop trough the hashmap we just creates for calculating the right deviation
+        // depending on the amount of ratings
 
         HashMap<Integer, HashMap<Integer,Deviations>> deviationMap = new HashMap<>();
         for (Map.Entry<Integer, HashMap<Integer,Deviations>> deviationItem : dev.entrySet())
@@ -76,8 +83,8 @@ public class SlopeOne {
         return deviationMap;
     }
 
-    public HashMap<Integer,Double> predictRating(UserPreference targetUser,HashMap<Integer, HashMap<Integer,Deviations>> slopeOne ){
-        double numerator , denominator = 0.0;
+    public List<Recommendation> predictRating(UserPreference targetUser,HashMap<Integer, HashMap<Integer,Deviations>> slopeOne ,
+                                                   int numberOfRecommendations){
         HashMap<Integer,Double> targetUserRatings = targetUser.getRatings();
 
         HashMap<Integer,Integer> amountOfRaters = new HashMap<>();
@@ -105,12 +112,52 @@ public class SlopeOne {
             }
 
         }
-        HashMap<Integer,Double> recommendations = new HashMap<>();
-
+        ArrayList<Recommendation> recommendations = new ArrayList<>();
         for(Map.Entry<Integer,Double> rec : tempRecommendations.entrySet()) {
             double rating = rec.getValue() / amountOfRaters.get(rec.getKey());
-            recommendations.put(rec.getKey(),rating);
+            Recommendation recommendation = new Recommendation(rec.getKey(), rating);
+            recommendations.add(recommendation);
+        }
+
+        recommendations.sort(new recommendationComparator());
+        if(recommendations.size() > numberOfRecommendations){
+            return  recommendations.subList(0,numberOfRecommendations);
         }
         return  recommendations;
+    }
+
+    public HashMap<Integer, HashMap<Integer,Deviations>> update(HashMap<Integer, HashMap<Integer,Deviations>> deviations,
+                                                                Pair<Integer,Double> updateItem,
+                                                                UserPreference targetUser){
+        // loop trow the x as of items
+        for (Map.Entry<Integer, HashMap<Integer,Deviations>> deviationItem : deviations.entrySet()) {
+
+            if (updateItem.getKey() == deviationItem.getKey()) {
+                // loop trough the y as
+                for (Map.Entry<Integer, Deviations> devItem : deviationItem.getValue().entrySet()) {
+                    if (updateItem.getKey() != devItem.getKey() && targetUser.getRatings().containsKey(devItem.getKey())){
+                        Deviations dev = devItem.getValue();
+                        Double newDev = ((dev.amountOfRatings*dev.rating)+(updateItem.getValue() - targetUser.getRating(devItem.getKey())))/ (dev.amountOfRatings + 1);
+                        deviationItem.getValue().put(devItem.getKey(),new Deviations(devItem.getKey(),newDev,dev.amountOfRatings + 1));
+                    }
+                }
+            }else{
+                for (Map.Entry<Integer, Deviations> devItem : deviationItem.getValue().entrySet()) {
+                    if (updateItem.getKey() == devItem.getKey() && targetUser.getRatings().containsKey(deviationItem.getKey())){
+                        Deviations dev = devItem.getValue();
+                        Double newDev = ((dev.amountOfRatings*dev.rating)+( targetUser.getRating(deviationItem.getKey()) - updateItem.getValue()))/ (dev.amountOfRatings + 1);
+                        deviationItem.getValue().put(devItem.getKey(),new Deviations(devItem.getKey(),newDev,dev.amountOfRatings + 1));
+                    }
+                }
+            }
+        }
+        return  deviations;
+    }
+}
+
+class recommendationComparator implements Comparator<Recommendation> {
+    @Override
+    public int compare(Recommendation a, Recommendation b) {
+        return a.getRating() > b.getRating() ? -1 : a.getRating() == (b.getRating()) ? 0 : 1;
     }
 }
