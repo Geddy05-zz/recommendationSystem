@@ -1,3 +1,6 @@
+import Models.Item;
+import Models.UserPreference;
+
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,6 +21,7 @@ public class MiningData {
 
         try {
             final Scanner data;
+            // select right dataSet
             if(dataSetNumber == 1) {
                 data = new Scanner(new FileReader("test.data"));
             }else if (dataSetNumber == 2){
@@ -25,7 +29,6 @@ public class MiningData {
             }else{
                 data = new Scanner(new FileReader("u.data"));
             }
-//            final Scanner data = new Scanner(new FileReader("test.data"));
             while (data.hasNext()) {
                 final String[] columns;
                 if(dataSetNumber == 1) {
@@ -49,12 +52,14 @@ public class MiningData {
         }
 
         // Log treeMap
-        for(Map.Entry<String,UserPreference> entry : userItem.entrySet()) {
-            String key = entry.getKey();
-            UserPreference preference = entry.getValue();
-            System.out.println(key + "  => " + preference.getRatings());
+        if(Program.allowPrinting) {
+            for (Map.Entry<String, UserPreference> entry : userItem.entrySet()) {
+                String key = entry.getKey();
+                UserPreference preference = entry.getValue();
+                System.out.println(key + "  => " + preference.getRatings());
+            }
+            System.out.println(" ");
         }
-        System.out.println(" ");
         return userItem;
     }
 
@@ -71,15 +76,16 @@ public class MiningData {
         }catch(Exception e){
             System.out.println(e);
         }
-
-        for(Map.Entry<Integer,String> entry : genre.entrySet()) {
-            System.out.println(entry.getKey() + "  => " + entry.getValue());
+        if(Program.allowPrinting) {
+            for(Map.Entry<Integer,String> entry : genre.entrySet()) {
+                System.out.println(entry.getKey() + "  => " + entry.getValue());
+            }
         }
         return genre;
 
     }
 
-    public HashMap<Integer,Item>getMovieFromFile(HashMap<Integer,String> genres){
+    public HashMap<Integer, Item>getMovieFromFile(HashMap<Integer,String> genres){
         HashMap<Integer,Item> movies = new HashMap<Integer, Item>();
 
         try{
@@ -107,8 +113,10 @@ public class MiningData {
             System.out.println(e);
         }
 
-        for(Map.Entry<Integer,Item> entry : movies.entrySet()) {
-            System.out.println(entry.getKey() + "  => " + entry.getValue().getName() + " / " + entry.getValue().getGenre() );
+        if(Program.allowPrinting) {
+            for(Map.Entry<Integer,Item> entry : movies.entrySet()) {
+                System.out.println(entry.getKey() + "  => " + entry.getValue().getName() + " / " + entry.getValue().getGenre() );
+            }
         }
         return movies;
     }

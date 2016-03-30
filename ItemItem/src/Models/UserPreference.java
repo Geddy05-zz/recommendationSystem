@@ -1,4 +1,4 @@
-/**
+package Models; /**
  * Created by geddy on 17-3-2016.
  */
 import java.util.HashMap;
