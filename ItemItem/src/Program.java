@@ -1,5 +1,10 @@
+import Models.Deviations;
+import Models.Item;
+import Models.UserPreference;
+import apple.laf.JRSUIConstants;
 import javafx.util.Pair;
 
+import java.net.PortUnreachableException;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -13,10 +18,12 @@ import java.util.Scanner;
 public class Program {
 
     HashMap<String, UserPreference> userItem;
+    public static boolean allowPrinting = false;
     public String targetUserKey = "3";
     public int dataSetNumber = 1;
     public int numberOfRecommendations = 3;
-    public HashMap<Integer,Item> movies = new HashMap<>();
+    public int updateDeviation = 0;
+    public HashMap<Integer, Item> movies = new HashMap<>();
     DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
 
@@ -24,6 +31,9 @@ public class Program {
 
         getInputValues();
 
+        System.out.println("Start slope one ");
+
+        long startTime = System.currentTimeMillis();
         MiningData miningData = new MiningData(dataSetNumber);
         userItem = miningData.readData();
 
@@ -32,18 +42,36 @@ public class Program {
             this.movies = miningData.getMovieFromFile(genre);
         }
 
+        long deviationTime = System.currentTimeMillis();
         SlopeOne so = new SlopeOne();
-        HashMap<Integer, HashMap<Integer,Deviations>>  a = so.calculate(userItem);
+        HashMap<Integer, HashMap<Integer, Deviations>>  a = so.calculate(userItem);
 
-//        System.out.println("======== Deviation ======== ");
-        print(a);
+        if(allowPrinting) {
+            System.out.println("======== Deviation ======== ");
+            print(a);
+        }
+        if (updateDeviation == 1) {
 
-//        a = so.update(a,new Pair(105,4.0),userItem.get("3"));
-//        System.out.println("======== Deviation After update ======== ");
-//        print(a);
+            a = so.update(a,new Pair(105,4.0),userItem.get("3"));
+
+            if(allowPrinting) {
+                System.out.println("======== Deviation After update ======== ");
+                print(a);
+            }
+        }
+        long computationTime = System.currentTimeMillis();
+
 
         List<Recommendation> recommendations = so.predictRating(userItem.get(targetUserKey),a,numberOfRecommendations);
         printResults(recommendations);
+
+        long endTime = System.currentTimeMillis();
+
+        System.out.println(" ");
+        System.out.println("====== Benchmark =====");
+        System.out.println("Total Slope One time: " + (endTime-deviationTime)/ 1000.0 + "sec");
+        System.out.println("PredictRating time: " + (endTime-computationTime) / 1000.0 + "sec");
+        System.out.println("Total time: " + (endTime-startTime) / 1000.0 + "sec");
     }
 
     public void getInputValues(){
@@ -58,6 +86,10 @@ public class Program {
         System.out.println("3   =>  MovieLens 100k");
         System.out.println("Select a data set ");
         this.dataSetNumber = scanner.nextInt();
+
+        System.out.println("0   =>  no Update");
+        System.out.println("1   =>  Update ");
+        this.updateDeviation = scanner.nextInt();
 
         System.out.println("Number of recommendations wanted ?");
         this.numberOfRecommendations = scanner.nextInt();
@@ -90,7 +122,7 @@ public class Program {
                 System.out.print(key + "  => ");
 
                 for (Map.Entry<Integer, Deviations> dev : differents.entrySet()) {
-                    System.out.print(dev.getKey() + " = " + dev.getValue().getRating() + "  " + dev.getValue().amountOfRatings + ", ");
+                    System.out.print(dev.getKey() + " = " + dev.getValue().getRating() + "  " + dev.getValue().getAmountOfRatings() + ", ");
                 }
                 System.out.println(" ");
             }

@@ -1,3 +1,5 @@
+import Models.Deviations;
+import Models.UserPreference;
 import javafx.util.Pair;
 
 import java.util.*;
@@ -7,7 +9,7 @@ import java.util.*;
  */
 public class SlopeOne {
 
-    public HashMap<Integer, HashMap<Integer,Deviations>>  calculate(HashMap<String, UserPreference> userRatings){
+    public HashMap<Integer, HashMap<Integer, Deviations>>  calculate(HashMap<String, UserPreference> userRatings){
 
         HashMap<Integer, HashMap<Integer,Integer>> freg = new HashMap<>();
         HashMap<Integer, HashMap<Integer,Deviations>> dev = new HashMap<>();
@@ -76,7 +78,7 @@ public class SlopeOne {
 
                 double a = devItem.getValue().getRating() / freg.get(deviationItem.getKey()).get(devItem.getKey());
 
-                Deviations deviation = new Deviations(devItem.getKey(), a, devItem.getValue().amountOfRatings);
+                Deviations deviation = new Deviations(devItem.getKey(), a, devItem.getValue().getAmountOfRatings());
                 tempDev.put(devItem.getKey(), deviation);
                 deviationMap.put(deviationItem.getKey(), tempDev);
             }
@@ -137,16 +139,16 @@ public class SlopeOne {
                 for (Map.Entry<Integer, Deviations> devItem : deviationItem.getValue().entrySet()) {
                     if (updateItem.getKey() != devItem.getKey() && targetUser.getRatings().containsKey(devItem.getKey())){
                         Deviations dev = devItem.getValue();
-                        Double newDev = ((dev.amountOfRatings*dev.rating)+(updateItem.getValue() - targetUser.getRating(devItem.getKey())))/ (dev.amountOfRatings + 1);
-                        deviationItem.getValue().put(devItem.getKey(),new Deviations(devItem.getKey(),newDev,dev.amountOfRatings + 1));
+                        Double newDev = ((dev.getAmountOfRatings()*dev.getRating())+(updateItem.getValue() - targetUser.getRating(devItem.getKey())))/ (dev.getAmountOfRatings() + 1);
+                        deviationItem.getValue().put(devItem.getKey(),new Deviations(devItem.getKey(),newDev,dev.getAmountOfRatings() + 1));
                     }
                 }
             }else{
                 for (Map.Entry<Integer, Deviations> devItem : deviationItem.getValue().entrySet()) {
                     if (updateItem.getKey() == devItem.getKey() && targetUser.getRatings().containsKey(deviationItem.getKey())){
                         Deviations dev = devItem.getValue();
-                        Double newDev = ((dev.amountOfRatings*dev.rating)+( targetUser.getRating(deviationItem.getKey()) - updateItem.getValue()))/ (dev.amountOfRatings + 1);
-                        deviationItem.getValue().put(devItem.getKey(),new Deviations(devItem.getKey(),newDev,dev.amountOfRatings + 1));
+                        Double newDev = ((dev.getAmountOfRatings()*dev.getRating())+( targetUser.getRating(deviationItem.getKey()) - updateItem.getValue()))/ (dev.getAmountOfRatings() + 1);
+                        deviationItem.getValue().put(devItem.getKey(),new Deviations(devItem.getKey(),newDev,dev.getAmountOfRatings() + 1));
                     }
                 }
             }
