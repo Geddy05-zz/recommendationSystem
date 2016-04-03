@@ -1,8 +1,5 @@
 package Models;
 
-/**
- * Created by geddy on 25/03/16.
- */
 public class Deviations {
     double rating;
     int productID;

@@ -2,9 +2,6 @@ package Models;
 
 import java.util.ArrayList;
 
-/**
- * Created by geddy on 29-3-2016.
- */
 public class Item {
     private int iD;
     private String name;

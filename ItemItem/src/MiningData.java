@@ -7,9 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-/**
- * Created by geddy on 17-3-2016.
- */
+
 public class MiningData {
     private int dataSetNumber;
     public MiningData(int dataSetNumber){

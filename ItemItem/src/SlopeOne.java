@@ -4,9 +4,6 @@ import javafx.util.Pair;
 
 import java.util.*;
 
-/**
- * Created by geddy on 17-3-2016.
- */
 public class SlopeOne {
 
     public HashMap<Integer, HashMap<Integer, Deviations>>  calculate(HashMap<String, UserPreference> userRatings){
@@ -63,7 +60,6 @@ public class SlopeOne {
 
         // loop trough the hashmap we just creates for calculating the right deviation
         // depending on the amount of ratings
-
         HashMap<Integer, HashMap<Integer,Deviations>> deviationMap = new HashMap<>();
         for (Map.Entry<Integer, HashMap<Integer,Deviations>> deviationItem : dev.entrySet())
             for (Map.Entry<Integer, Deviations> devItem : deviationItem.getValue().entrySet()) {

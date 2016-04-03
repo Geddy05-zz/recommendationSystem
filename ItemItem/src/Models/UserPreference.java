@@ -1,6 +1,6 @@
-package Models; /**
- * Created by geddy on 17-3-2016.
- */
+package Models;
+
+
 import java.util.HashMap;
 
 public class UserPreference {

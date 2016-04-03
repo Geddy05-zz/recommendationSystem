@@ -1,19 +1,13 @@
 import Models.Deviations;
 import Models.Item;
 import Models.UserPreference;
-import apple.laf.JRSUIConstants;
 import javafx.util.Pair;
-
-import java.net.PortUnreachableException;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-/**
- * Created by geddy on 15-3-2016.
- */
 
 public class Program {
 

@@ -1,6 +1,4 @@
-/**
- * Created by geddy on 29-3-2016.
- */
+
 public class Recommendation {
     public int itemId;
     public double rating;
