@@ -88,7 +88,11 @@ public class SlopeOne {
         HashMap<Integer,Integer> amountOfRaters = new HashMap<>();
         HashMap<Integer,Double> tempRecommendations = new HashMap<>();
 
+
+        // loop trough all users items
         for(Map.Entry<Integer,Double> targetUserRating : targetUserRatings.entrySet()){
+
+            // loop trough all deviation items and if targetUser didn't rate the item do the rating calculation.
             for (Map.Entry<Integer,HashMap<Integer,Deviations>> deviations : slopeOne.entrySet()){
                 if(!targetUserRatings.containsKey(deviations.getKey()) && deviations.getValue().containsKey(targetUserRating.getKey())){
                     Deviations dev = deviations.getValue().get(targetUserRating.getKey());
@@ -110,6 +114,8 @@ public class SlopeOne {
             }
 
         }
+
+        // calculate the users rating
         ArrayList<Recommendation> recommendations = new ArrayList<>();
         for(Map.Entry<Integer,Double> rec : tempRecommendations.entrySet()) {
             double rating = rec.getValue() / amountOfRaters.get(rec.getKey());
@@ -117,6 +123,7 @@ public class SlopeOne {
             recommendations.add(recommendation);
         }
 
+        // Sort th recommendations
         recommendations.sort(new recommendationComparator());
         if(recommendations.size() > numberOfRecommendations){
             return  recommendations.subList(0,numberOfRecommendations);
