@@ -38,8 +38,12 @@ public class Program {
         userItem = miningData.readData();
 
         if(dataSetNumber > 2){
-            HashMap<Integer,String> genre  = miningData.getGenreFromFile();
-            this.movies = miningData.getMovieFromFile(genre);
+            if(dataSetNumber == 3) {
+                HashMap<Integer, String> genre = miningData.getGenreFromFile();
+                this.movies = miningData.getMovieFromFile(genre);
+            }else{
+                this.movies = miningData.getMovieFromFile();
+            }
         }
 
         long deviationTime = System.currentTimeMillis();
@@ -84,6 +88,8 @@ public class Program {
         System.out.println("1   =>  Book");
         System.out.println("2   =>  Small set");
         System.out.println("3   =>  MovieLens 100k");
+        System.out.println("4   =>  MovieLens 1 M");
+
         System.out.println("Select a data set ");
         this.dataSetNumber = scanner.nextInt();
 

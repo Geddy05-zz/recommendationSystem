@@ -20,6 +20,12 @@ public class Item {
         this.genre = genre;
     }
 
+    public Item(int iD,String name,String imdb){
+        this.iD = iD;
+        this.name = name;
+        this.imdb = imdb;
+    }
+
     public int getiD() {
         return iD;
     }

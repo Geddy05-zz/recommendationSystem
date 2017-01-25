@@ -26,8 +26,10 @@ public class MiningData {
                 data = new Scanner(new FileReader("test.data"));
             }else if (dataSetNumber == 2){
                 data = new Scanner(new FileReader("userItem.data"));
-            }else{
+            }else if (dataSetNumber == 3){
                 data = new Scanner(new FileReader("u.data"));
+            }else{
+                data = new Scanner(new FileReader("ratings.dat"));
             }
             while (data.hasNext()) {
                 final String[] columns;
@@ -35,8 +37,10 @@ public class MiningData {
                     columns = data.next().split(",");
                 }else if (dataSetNumber == 2){
                     columns = data.next().split(",");
-                }else{
+                }else if (dataSetNumber == 3){
                     columns = data.nextLine().split("\\t");
+                }else{
+                    columns = data.nextLine().split("::");
                 }
                 if (userItem.containsKey(columns[0])){
                     UserPreference user = userItem.get(columns[0]);
@@ -48,7 +52,7 @@ public class MiningData {
                 }
             }
         }catch(Exception e){
-            System.out.println(e);
+            System.out.println("readData" +e);
         }
 
         // Log treeMap
@@ -60,6 +64,7 @@ public class MiningData {
             }
             System.out.println(" ");
         }
+        System.out.println("Done Loading Ratings");
         return userItem;
     }
 
@@ -74,7 +79,7 @@ public class MiningData {
             }
 
         }catch(Exception e){
-            System.out.println(e);
+            System.out.println("Genre: "+e);
         }
         if(Program.allowPrinting) {
             for(Map.Entry<Integer,String> entry : genre.entrySet()) {
@@ -110,7 +115,7 @@ public class MiningData {
             }
 
         }catch(Exception e){
-            System.out.println(e);
+            System.out.println(" movies"+e);
         }
 
         if(Program.allowPrinting) {
@@ -118,6 +123,34 @@ public class MiningData {
                 System.out.println(entry.getKey() + "  => " + entry.getValue().getName() + " / " + entry.getValue().getGenre() );
             }
         }
+        return movies;
+    }
+
+    public HashMap<Integer, Item>getMovieFromFile(){
+        HashMap<Integer,Item> movies = new HashMap<Integer, Item>();
+
+        try{
+            final Scanner genreData = new Scanner(new FileReader("movies.dat"));
+            while (genreData.hasNext()){
+                final String[] columns = genreData.nextLine().split("::");
+                int id = Integer.parseInt(columns[0]);
+                String name = columns[1];
+                String imdb = columns[2];
+
+                Item item = new Item(id,name,imdb);
+                movies.put(Integer.parseInt(columns[0]),item);
+            }
+
+        }catch(Exception e){
+            System.out.println(e);
+        }
+
+        if(Program.allowPrinting) {
+            for(Map.Entry<Integer,Item> entry : movies.entrySet()) {
+                System.out.println(entry.getKey() + "  => " + entry.getValue().getName() + " / " + entry.getValue().getImdb() );
+            }
+        }
+        System.out.println("Done Loading movies");
         return movies;
     }
 }
